@@ -119,7 +119,11 @@ export default class GitAdapter {
   }
 
   async _save({ serviceId, documentType, content, fileExtension }) {
-    const directory = `${this.path}/${serviceId}`;
+    let directory = `${this.path}/${serviceId}`;
+
+    if (documentType.includes('/')) {
+      directory = `${directory}/${path.dirname(documentType)}`;
+    }
 
     if (!fsApi.existsSync(directory)) {
       await fs.mkdir(directory, { recursive: true });
