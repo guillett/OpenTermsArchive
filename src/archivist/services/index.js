@@ -34,41 +34,28 @@ export async function load() {
 
     services[service.id] = service;
 
-    const documentNames = Object.keys(serviceDeclaration.documents);
-
-    await Promise.all(documentNames.map(async documentName => {
-      const documentType = serviceDeclaration.documents[documentName];
-      const {
-        filter: filterNames,
-        fetch: location,
-        executeClientScripts,
-        select: contentSelectors,
-        remove: noiseSelectors,
-      } = documentType;
-
-      let filters;
-
-      if (filterNames) {
-        const filterFilePath = fileName.replace('.json', '.filters.js');
-        const serviceFilters = await import(pathToFileURL(path.join(declarationsPath, filterFilePath))); // eslint-disable-line no-await-in-loop
-
-        filters = filterNames.map(filterName => serviceFilters[filterName]);
-      }
-      const document = new DocumentDeclaration({
-        service,
-        type: documentName,
-        location,
-        executeClientScripts,
-        contentSelectors,
-        noiseSelectors,
-        filters,
-      });
-
-      services[service.id].addDocumentDeclaration(document);
-    }));
+    await addDocumentDeclarations(serviceDeclaration.documents, services, service, fileName);
   }));
 
   return services;
+}
+
+async function addDocumentDeclarations(documents, services, service, fileName) {
+  const documentTypes = Object.keys(documents);
+
+  await Promise.all(documentTypes.map(async documentType => {
+    const documentDeclaration = documents[documentType];
+
+    if (documentDeclaration.fetch) {
+      services[service.id].addDocumentDeclaration(await generateDocumentDeclaration(documentDeclaration, documentType, fileName, service, documentDeclaration));
+    }
+
+    if (documentDeclaration.sections) {
+      Object.keys(documentDeclaration.sections).filter(sectionName => ![ 'fetch', 'select', 'filter', 'remove' ].includes(sectionName)).forEach(async section => {
+        services[service.id].addDocumentDeclaration(await generateDocumentDeclaration(documentDeclaration.sections[section], `${documentType}/${section}`, fileName, service, documentDeclaration.sections));
+      });
+    }
+  }));
 }
 
 export async function loadWithHistory() {
@@ -121,6 +108,41 @@ export async function loadWithHistory() {
   }
 
   return services;
+}
+
+async function generateDocumentDeclaration(documentDeclaration, documentType, fileName, service, sections) {
+  const {
+    filter: filterNames,
+    fetch: location,
+    executeClientScripts,
+    select: contentSelectors,
+    remove: noiseSelectors,
+  } = {
+    select: sections.select,
+    fetch: sections.fetch,
+    filter: sections.filter,
+    remove: sections.remove,
+    ...documentDeclaration,
+  };
+
+  let filters;
+
+  if (filterNames) {
+    const filterFilePath = fileName.replace('.json', '.filters.js');
+    const serviceFilters = await import(pathToFileURL(path.join(declarationsPath, filterFilePath))); // eslint-disable-line no-await-in-loop
+
+    filters = filterNames.map(filterName => serviceFilters[filterName]);
+  }
+
+  return new DocumentDeclaration({
+    service,
+    type: documentType,
+    location,
+    executeClientScripts,
+    contentSelectors,
+    noiseSelectors,
+    filters,
+  });
 }
 
 function extractHistoryDates({ filters, filterNames, documenTypeDeclarationEntries }) {
