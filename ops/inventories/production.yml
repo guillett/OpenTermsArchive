@@ -6,43 +6,14 @@ all:
   children:
     production:
       children:
-        services_all:
+        france_elections_experimental:
           hosts:
-            51.89.227.206:
-              services_directory: ota-services-all
-              services_repository: https://github.com/OpenTermsArchive/services-all.git
-              snapshots_directory: ota-snapshots
-              snapshots_repository: git@github.com:ambanum/OpenTermsArchive-snapshots.git
-              snapshots_branch: master
-              versions_directory: ota-versions
-              versions_repository: git@github.com:ambanum/OpenTermsArchive-versions.git
-              versions_branch: master
-        dating:
-          hosts:
-            vps-99ae1d89.vps.ovh.net:
-              services_directory: ota-services-dating
-              services_repository: https://github.com/OpenTermsArchive/services-dating.git
-              snapshots_directory: ota-snapshots-dating
-              snapshots_repository: git@github.com:OpenTermsArchive/snapshots-dating.git
-              versions_directory: ota-versions-dating
-              versions_repository: git@github.com:OpenTermsArchive/versions-dating.git
-        france:
-          hosts:
-            198.244.142.9:
-              services_directory: ota-services-france
-              services_repository: https://github.com/OpenTermsArchive/declarations-france.git
-              snapshots_directory: ota-snapshots-france
-              snapshots_repository: git@github.com:OpenTermsArchive/snapshots-france.git
-              versions_directory: ota-versions-france
-              versions_repository: git@github.com:OpenTermsArchive/versions-france.git
-        france_elections:
-          hosts:
-            198.244.140.194:
-              services_directory: ota-declarations-france-elections
-              services_repository: https://github.com/OpenTermsArchive/declarations-france-elections.git
-              snapshots_directory: ota-snapshots-france-elections
-              snapshots_repository: git@github.com:OpenTermsArchive/snapshots-france-elections.git
+            198.244.140.101:
+              services_directory: ota-declarations-france-elections-experimental
+              services_repository: https://github.com/OpenTermsArchive/declarations-france-elections-experimental.git
+              snapshots_directory: ota-snapshots-france-elections-experimental
+              snapshots_repository: git@github.com:OpenTermsArchive/snapshots-france-elections-experimental.git
               snapshots_branch: main
-              versions_directory: ota-versions-france-elections
-              versions_repository: git@github.com:OpenTermsArchive/versions-france-elections.git
+              versions_directory: ota-versions-france-elections-experimental
+              versions_repository: git@github.com:OpenTermsArchive/versions-france-elections-experimental.git
               versions_branch: main
