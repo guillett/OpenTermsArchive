@@ -6,6 +6,7 @@
     update: no
     accept_hostkey: yes
     key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
+    version: france-elections-experimental
   register: git_clone_ota # the `before` property of the return value can tell us if the repository has been cloned already or not, see <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html#return-values>
   tags:
     - restart
@@ -23,6 +24,7 @@
     accept_hostkey: yes
     key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
     depth: 1
+    version: france-elections-experimental
   tags:
     - setup
     - update
