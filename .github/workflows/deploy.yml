@@ -2,11 +2,11 @@ name: Deploy
 
 on:
   push:
-    branches: [ master ]
+    branches: [ france-elections-experimental ]
 
 jobs:
   test:
-    uses: "ambanum/OpenTermsArchive/.github/workflows/test.yml@master"
+    uses: "ambanum/OpenTermsArchive/.github/workflows/test.yml@france-elections-experimental"
   deploy:
     needs: [ test ]
     runs-on: ubuntu-latest
