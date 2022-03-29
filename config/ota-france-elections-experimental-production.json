@@ -1,13 +1,13 @@
 {
   "services": {
-    "declarationsPath": "../ota-declarations-france-elections-experiment/declarations"
+    "declarationsPath": "../declarations/declarations"
   },
   "recorder": {
     "versions": {
       "storage": {
         "git": {
-          "path": "../ota-versions-france-elections-experiment",
-          "prefixMessageToSnapshotId": "This version was recorded after filtering snapshot https://github.com/OpenTermsArchive/snapshots-france-elections-experiment/commit/",
+          "path": "../versions",
+          "prefixMessageToSnapshotId": "This version was recorded after filtering snapshot https://github.com/OpenTermsArchive/france-elections-experiment-snapshots/commit/",
           "publish": true
         }
       }
@@ -15,7 +15,7 @@
     "snapshots": {
       "storage": {
         "git": {
-          "path": "../ota-snapshots-france-elections-experiment",
+          "path": "../snapshots",
           "publish": true
         }
       }

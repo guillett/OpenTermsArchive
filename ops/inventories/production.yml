@@ -9,11 +9,11 @@ all:
         france_elections_experimental:
           hosts:
             198.244.140.101:
-              services_directory: ota-declarations-france-elections-experiment
+              services_directory: declarations
               services_repository: git@github.com:OpenTermsArchive/declarations-france-elections-experiment.git
-              snapshots_directory: ota-snapshots-france-elections-experiment
+              snapshots_directory: snapshots
               snapshots_repository: git@github.com:OpenTermsArchive/snapshots-france-elections-experiment.git
               snapshots_branch: main
-              versions_directory: ota-versions-france-elections-experiment
+              versions_directory: versions
               versions_repository: git@github.com:OpenTermsArchive/versions-france-elections-experiment.git
               versions_branch: main
