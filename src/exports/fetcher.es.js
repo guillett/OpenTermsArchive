@@ -14,11 +14,76 @@ class FetchDocumentError extends Error {
 
 puppeteer.use(stealthPlugin());
 
-async function fetch$2(url, cssSelectors, options = { timeout: 5000, language: 'en', elementTimeout: 5000 }) {
+let browser;
 
-  {
+async function fetch$2(url, cssSelectors, options = { timeout: 5000, language: 'en', elementTimeout: 5000 }) {
+  let page;
+  let response;
+  const selectors = [].concat(cssSelectors);
+
+  if (!browser) {
     throw new Error('The headless browser should be controlled manually with "launchHeadlessBrowser" and "stopHeadlessBrowser".');
   }
+
+  try {
+    page = await browser.newPage();
+
+    await page.setDefaultNavigationTimeout(options.timeout);
+    await page.setExtraHTTPHeaders({ 'Accept-Language': options.language });
+
+    response = await page.goto(url, { waitUntil: 'networkidle0' });
+
+    if (!response) {
+      throw new FetchDocumentError(`Response is empty when trying to fetch '${url}'`);
+    }
+
+    const statusCode = response.status();
+
+    if (statusCode < 200 || (statusCode >= 300 && statusCode !== 304)) {
+      throw new FetchDocumentError(`Received HTTP code ${statusCode} when trying to fetch '${url}'`);
+    }
+
+    const waitForSelectorsPromises = selectors.map(selector => page.waitForSelector(selector, { timeout: options.elementTimeout }));
+
+    // We expect all elements to be present on the page…
+    await Promise.all(waitForSelectorsPromises).catch(error => {
+      if (error.name == 'TimeoutError') {
+        // however, if they are not, this is not considered as an error since selectors may be out of date
+        // and the whole content of the page should still be returned.
+        return;
+      }
+
+      throw error;
+    });
+
+    return {
+      mimeType: 'text/html',
+      content: await page.content(),
+    };
+  } catch (error) {
+    throw new FetchDocumentError(error.message);
+  } finally {
+    if (page) {
+      await page.close();
+    }
+  }
+}
+
+async function launchHeadlessBrowser() {
+  if (browser) {
+    return;
+  }
+
+  browser = await puppeteer.launch({ headless: true });
+}
+
+async function stopHeadlessBrowser() {
+  if (!browser) {
+    return;
+  }
+
+  await browser.close();
+  browser = null;
 }
 
 async function fetch$1(url, options = { timeout: 5000, language: 'en' }) {
@@ -83,4 +148,6 @@ async function fetch({ url, executeClientScripts, cssSelectors, options }) {
   return fetch$1(url, options);
 }
 
-export { fetch as default };
+var other = { fetch, launchHeadlessBrowser, stopHeadlessBrowser };
+
+export { other as default };
