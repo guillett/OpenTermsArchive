@@ -19,7 +19,7 @@
     },
     "snapshots": {
       "storage": {
-        "type": "git",
+        "type": "mongo",
         "git": {
           "path": "./data/snapshots",
           "publish": false,

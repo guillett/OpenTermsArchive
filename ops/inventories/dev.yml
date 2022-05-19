@@ -13,10 +13,11 @@ all:
     dev:
       hosts:
         '127.0.0.1':
+          ota_branch: conditional_git_repo_ops_test
           ansible_ssh_port: 2222
           ansible_python_interpreter: /usr/bin/python3
           ansible_ssh_private_key_file: ~/.ssh/ota-vagrant
           services_repository: https://github.com/OpenTermsArchive/contrib-declarations.git
-          snapshots_repository: git@github.com:OpenTermsArchive/sandbox-snapshots.git
+          # snapshots_repository: git@github.com:OpenTermsArchive/sandbox-snapshots.git
           versions_repository: git@github.com:OpenTermsArchive/sandbox-versions.git
 

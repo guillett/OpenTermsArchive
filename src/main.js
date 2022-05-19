@@ -1,3 +1,4 @@
+import config from 'config';
 import cron from 'croner';
 
 import Archivist from './archivist/index.js';
@@ -24,7 +25,11 @@ const extraArgs = args.filter(arg => !arg.startsWith('--'));
 
   await archivist.initialize();
 
-  logger.info('Start Open Terms Archive\n');
+  logger.info('');//eslint-disable-line
+  logger.info('╔════START══config══════════════════════════════════════════════════');//eslint-disable-line
+  logger.info(config);//eslint-disable-line
+  logger.info('╚════END════config══════════════════════════════════════════════════');//eslint-disable-line
+  logger.info('Start Open Terms Archiveeeeeee\n');
 
   let serviceIds;
 

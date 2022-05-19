@@ -26,7 +26,12 @@ const consoleTransport = new winston.transports.Console();
 
 const transports = [consoleTransport];
 
+console.log('');//eslint-disable-line
+console.log('╔════START═══sendMailOnError═════════════════════════════════════════════════');//eslint-disable-line
 if (config.get('logger.sendMailOnError')) {
+  console.log(config.get('logger.sendMailOnError'));//eslint-disable-line
+  console.log('╚════END══════════════════════════════════════════════════════');//eslint-disable-line
+
   const mailerOptions = {
     to: config.get('logger.sendMailOnError.to'),
     from: config.get('logger.sendMailOnError.from'),
