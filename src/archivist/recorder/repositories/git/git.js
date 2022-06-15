@@ -25,7 +25,8 @@ export default class Git {
       .addConfig('core.autocrlf', false)
       .addConfig('push.default', 'current')
       .addConfig('user.name', this.author.name)
-      .addConfig('user.email', this.author.email);
+      .addConfig('user.email', this.author.email)
+      .addConfig('core.abbrev', 40); // Set hash to maximum SHA1 length to always handle ids in the same format and facilitate comparison
   }
 
   async add(filepath) {
@@ -33,11 +34,10 @@ export default class Git {
   }
 
   async commit({ filepath, message, date = new Date() }) {
+    const commitDate = new Date(date).toISOString();
     let summary;
 
     try {
-      const commitDate = new Date(date).toISOString();
-
       process.env.GIT_AUTHOR_DATE = commitDate;
       process.env.GIT_COMMITTER_DATE = commitDate;
 
@@ -51,9 +51,7 @@ export default class Git {
       return;
     }
 
-    const shortHash = summary.commit.replace('HEAD ', '').replace('(root-commit) ', '');
-
-    return this.getFullHash(shortHash); // Return a long commit hash to always handle ids in the same format and facilitate comparison
+    return summary.commit.replace('HEAD ', '').replace('(root-commit) ', '');
   }
 
   async pushChanges() {
