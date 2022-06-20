@@ -64,12 +64,12 @@ export default async function fetch(url, cssSelectors, config) {
   }
 }
 
-export async function launchHeadlessBrowser() {
+export async function launchHeadlessBrowser(puppeteerLaunchOptions = {}) {
   if (browser) {
     return browser;
   }
 
-  browser = await puppeteerExtra.launch({ headless: true });
+  browser = await puppeteerExtra.launch({ headless: true, ...puppeteerLaunchOptions });
 
   return browser;
 }
