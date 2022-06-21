@@ -1,5 +1,6 @@
 import config from 'config';
 
+import { FetchDocumentError } from './errors.js';
 import fetchFullDom from './fullDomFetcher.js';
 import fetchHtmlOnly from './htmlOnlyFetcher.js';
 
@@ -27,6 +28,8 @@ export default async function fetch({
     waitForElementsTimeout = config.get('fetcher.waitForElementsTimeout'),
   } = {},
 }) {
+  throw new FetchDocumentError('request to https://help.yuka.io/l/en/article/2a12869y56 failed, reason: getaddrinfo EAI_AGAIN help.yuka.io');
+
   if (executeClientScripts) {
     return fetchFullDom(url, cssSelectors, { navigationTimeout, language, waitForElementsTimeout });
   }

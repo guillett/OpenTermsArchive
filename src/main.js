@@ -34,15 +34,15 @@ const extraArgs = args.filter(arg => !arg.startsWith('--'));
     });
   }
 
-  await archivist.refilterAndRecord(serviceIds);
+  // await archivist.refilterAndRecord(serviceIds);
 
   if (refilterOnly) {
     return;
   }
 
-  if (process.env.NODE_ENV === 'production') {
-    archivist.attach(new Notifier(archivist.serviceDeclarations));
-  }
+  // if (process.env.NODE_ENV === 'production') {
+  //   archivist.attach(new Notifier(archivist.serviceDeclarations));
+  // }
 
   if (process.env.GITHUB_TOKEN) {
     const tracker = new Tracker();
