@@ -8,7 +8,6 @@ jobs:
   test:
     uses: "ambanum/OpenTermsArchive/.github/workflows/test.yml@main"
   deploy:
-    needs: [ test ]
     runs-on: ubuntu-latest
 
     steps:
