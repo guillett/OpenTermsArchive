@@ -1,0 +1,20 @@
+all:
+  vars:
+    ansible_user: debian
+    snapshots_branch: main
+    versions_branch: main
+    snapshots_directory: snapshots
+    versions_directory: versions
+    declarations_directory: declarations
+    app_directory: ota
+    ota_repository: https://github.com/ambanum/OpenTermsArchive.git
+    ota_branch: test-restart
+  children:
+    production:
+      children:
+        contrib:
+          hosts:
+            54.37.5.206:
+              config_file_name: contrib
+              services_repository: https://github.com/OpenTermsArchive/contrib-declarations.git
+              versions_repository: git@github.com:OpenTermsArchive/contrib-versions.git

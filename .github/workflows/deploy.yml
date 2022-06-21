@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [ test-restart ]
 
 jobs:
   test:
@@ -21,4 +21,4 @@ jobs:
       - run: echo "${{ secrets.ANSIBLE_VAULT_KEY }}" > vault.key
       - run: pip install --upgrade setuptools
       - run: pip install 'ansible ~= 2.9'
-      - run: ansible-playbook ops/site.yml --inventory ops/inventories/production.yml
+      - run: ansible-playbook ops/site.yml --inventory ops/inventories/experimentation.yml
