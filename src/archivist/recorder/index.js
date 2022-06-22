@@ -12,7 +12,8 @@ export default class Recorder {
   }
 
   async finalize() {
-    return Promise.all([ this.versionsRepository.finalize(), this.snapshotsRepository.finalize() ]);
+    await Promise.all([ this.versionsRepository.finalize(), this.snapshotsRepository.finalize() ]);
+    console.log('fini de finalize recorder');
   }
 
   async getLatestSnapshot(serviceId, documentType) {

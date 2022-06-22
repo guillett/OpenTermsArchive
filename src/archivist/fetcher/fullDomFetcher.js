@@ -81,4 +81,5 @@ export async function stopHeadlessBrowser() {
 
   await browser.close();
   browser = null;
+  console.log('fini de stopHeadlessBrowser');
 }

@@ -60,7 +60,7 @@ export default class Archivist extends events.EventEmitter {
       this.refilterDocumentsQueue.kill();
       this.trackDocumentChangesQueue.kill();
       stopHeadlessBrowser();
-      await this.recorder.finalize();
+      this.recorder.finalize();
     });
   }
 
