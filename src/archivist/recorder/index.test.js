@@ -189,14 +189,14 @@ describe('Recorder', () => {
             serviceId: SERVICE_ID,
             documentType: TYPE,
             content: CONTENT,
-            snapshotId: SNAPSHOT_ID,
+            snapshotIds: [SNAPSHOT_ID],
             fetchDate: FETCH_DATE,
           };
 
           const paramsNameToExpectedTextInError = {
             serviceId: 'service ID',
             documentType: 'document type',
-            snapshotId: 'snapshot ID',
+            snapshotIds: 'snapshot ID',
             fetchDate: 'fetch date',
             content: 'content',
           };
@@ -226,7 +226,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE,
             }));
 
@@ -256,7 +256,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE,
             });
 
@@ -264,7 +264,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: UPDATED_CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE_LATER,
             }));
 
@@ -296,7 +296,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE,
             });
 
@@ -304,7 +304,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE_LATER,
             }));
 
@@ -341,14 +341,14 @@ describe('Recorder', () => {
             serviceId: SERVICE_ID,
             documentType: TYPE,
             content: CONTENT,
-            snapshotId: SNAPSHOT_ID,
+            snapshotIds: [SNAPSHOT_ID],
             fetchDate: FETCH_DATE,
           };
 
           const paramsNameToExpectedTextInError = {
             serviceId: 'service ID',
             documentType: 'document type',
-            snapshotId: 'snapshot ID',
+            snapshotIds: 'snapshot ID',
             fetchDate: 'fetch date',
             content: 'content',
           };
@@ -378,7 +378,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE,
             }));
 
@@ -408,7 +408,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE,
             });
 
@@ -416,7 +416,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: UPDATED_CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE_LATER,
             }));
 
@@ -448,7 +448,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE,
             });
 
@@ -456,7 +456,7 @@ describe('Recorder', () => {
               serviceId: SERVICE_ID,
               documentType: TYPE,
               content: CONTENT,
-              snapshotId: SNAPSHOT_ID,
+              snapshotIds: [SNAPSHOT_ID],
               fetchDate: FETCH_DATE_LATER,
             }));
 
