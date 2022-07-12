@@ -6,6 +6,7 @@ import config from 'config';
 import winston from 'winston';
 
 import GitRepository from '../../src/archivist/recorder/repositories/git/index.js';
+import MongoRepository from '../../src/archivist/recorder/repositories/mongo/index.js';
 
 import { format } from './logger/index.js';
 import { importReadmeInGit } from './utils/index.js';
@@ -15,15 +16,17 @@ const ROOT_PATH = path.resolve(__dirname, '../../');
 const fs = fsApi.promises;
 
 const CONFIG = {
-  servicesToMigrate: [ 'ASICS', 'Amazon', 'Orange Money France' ],
+  servicesToMigrate: ['Instagram'],
   from: {
-    snapshots: 'france-snapshots',
-    versions: 'france-versions-hash-updated',
+    type: 'mongo',
+    configFile: 'contrib',
+    snapshots: 'contrib-snapshots',
+    versions: 'contrib-versions',
     prefixMessageToSnapshotId: 'This version was recorded after filtering snapshot https://github.com/OpenTermsArchive/france-snapshots/commit/',
   },
   to: {
-    snapshots: 'france-elections-snapshots',
-    versions: 'france-elections-versions-hash-updated',
+    snapshots: 'sandbox-snapshots',
+    versions: 'sandbox-versions',
     prefixMessageToSnapshotId: 'This version was recorded after filtering snapshot https://github.com/OpenTermsArchive/france-elections-snapshots/commit/',
   },
 };
@@ -40,25 +43,36 @@ const counters = {
     services: CONFIG.servicesToMigrate,
     from: {
       snapshots: {
-        source: new GitRepository({
-          ...config.get('recorder.snapshots.storage.git'),
-          path: path.resolve(ROOT_PATH, `./data/${CONFIG.from.snapshots}`),
+        source: new MongoRepository({
+          connectionURI: 'mongodb://localhost:27877',
+          database: 'open-terms-archive',
+          collection: 'snapshots',
         }),
-        destination: new GitRepository({
-          ...config.get('recorder.snapshots.storage.git'),
-          path: path.resolve(ROOT_PATH, `./data/${CONFIG.from.snapshots}-migrated`),
+        destination: new MongoRepository({
+          connectionURI: 'mongodb://localhost:27877',
+          database: 'open-terms-archive-after-pga',
+          collection: 'snapshots',
         }),
         logger: winston.createLogger({ transports: [ new (winston.transports.File)({ filename: `${__dirname}/logs/${CONFIG.from.snapshots}.log` }), new winston.transports.Console() ], format }),
       },
       versions: {
         source: new GitRepository({
-          ...config.get('recorder.versions.storage.git'),
-          path: path.resolve(ROOT_PATH, `./data/${CONFIG.from.versions}`),
+          path: './data/contrib-versions',
+          prefixMessageToSnapshotId: 'This version was recorded after filtering snapshot with Mongo ID ',
+          repository: 'git@github.com:OpenTermsArchive/contrib-versions.git',
+          author: {
+            name: 'Open Terms Archive Bot',
+            email: 'bot@opentermsarchive.org',
+          },
         }),
         destination: new GitRepository({
-          ...config.get('recorder.versions.storage.git'),
-          path: path.resolve(ROOT_PATH, `./data/${CONFIG.from.versions}-migrated`),
-          prefixMessageToSnapshotId: CONFIG.from.prefixMessageToSnapshotId,
+          path: './data/contrib-versions-after-pga',
+          prefixMessageToSnapshotId: 'This version was recorded after filtering snapshot with Mongo ID ',
+          repository: 'git@github.com:OpenTermsArchive/contrib-versions.git',
+          author: {
+            name: 'Open Terms Archive Bot',
+            email: 'bot@opentermsarchive.org',
+          },
         }),
         logger: winston.createLogger({ transports: [ new (winston.transports.File)({ filename: `${__dirname}/logs/${CONFIG.from.versions}.log` }), new winston.transports.Console() ], format }),
       },
@@ -66,24 +80,40 @@ const counters = {
     to: {
       snapshots: {
         source: new GitRepository({
-          ...config.get('recorder.snapshots.storage.git'),
-          path: path.resolve(ROOT_PATH, `./data/${CONFIG.to.snapshots}`),
+          path: './data/pga-snapshots',
+          repository: 'git@github.com:OpenTermsArchive/pga-snapshots.git',
+          author: {
+            name: 'Open Terms Archive Bot',
+            email: 'bot@opentermsarchive.org',
+          },
         }),
         destination: new GitRepository({
-          ...config.get('recorder.snapshots.storage.git'),
-          path: path.resolve(ROOT_PATH, `./data/${CONFIG.to.snapshots}-migrated`),
+          path: './data/pga-snapshots-after-import',
+          repository: 'git@github.com:OpenTermsArchive/pga-snapshots.git',
+          author: {
+            name: 'Open Terms Archive Bot',
+            email: 'bot@opentermsarchive.org',
+          },
         }),
         logger: winston.createLogger({ transports: [ new (winston.transports.File)({ filename: `${__dirname}/logs/${CONFIG.to.snapshots}.log` }), new winston.transports.Console() ], format }),
       },
       versions: {
         source: new GitRepository({
-          ...config.get('recorder.versions.storage.git'),
-          path: path.resolve(ROOT_PATH, `./data/${CONFIG.to.versions}`),
+          path: './data/pga-versions',
+          repository: 'git@github.com:OpenTermsArchive/pga-versions.git',
+          author: {
+            name: 'Open Terms Archive Bot',
+            email: 'bot@opentermsarchive.org',
+          },
         }),
         destination: new GitRepository({
-          ...config.get('recorder.versions.storage.git'),
-          path: path.resolve(ROOT_PATH, `./data/${CONFIG.to.versions}-migrated`),
-          prefixMessageToSnapshotId: CONFIG.to.prefixMessageToSnapshotId,
+          path: './data/pga-versions-after-import',
+          repository: 'git@github.com:OpenTermsArchive/pga-versions.git',
+          prefixMessageToSnapshotId: 'This version was recorded after filtering snapshot https://github.com/OpenTermsArchive/pga-snapshots/commit/',
+          author: {
+            name: 'Open Terms Archive Bot',
+            email: 'bot@opentermsarchive.org',
+          },
         }),
         logger: winston.createLogger({ transports: [ new (winston.transports.File)({ filename: `${__dirname}/logs/${CONFIG.to.versions}.log` }), new winston.transports.Console() ], format }),
       },
@@ -91,8 +121,11 @@ const counters = {
   };
 
   await initialize(migration);
+  console.log('Initialization Done');
+  console.log('Migrating...', CONFIG.servicesToMigrate.join(', '));
+  const fromSnapshotsRecords = await migration.from.snapshots.source.findAll({ serviceId: { $in: CONFIG.servicesToMigrate } });
 
-  const fromSnapshotsRecords = await migration.from.snapshots.source.findAll();
+  console.log('fromSnapshotsRecords Done');
   const toSnapshotsRecords = await migration.to.snapshots.source.findAll();
   const snapshotsToMigrate = fromSnapshotsRecords.filter(({ serviceId }) => migration.services.includes(serviceId));
   const fromSnapshotsRecordsToRewrite = fromSnapshotsRecords.filter(({ serviceId }) => !migration.services.includes(serviceId));
@@ -190,12 +223,13 @@ async function initialize(migration) {
     migration.to.versions.destination.initialize(),
   ]);
 
-  return Promise.all([
-    importReadmeInGit({ from: migration.from.snapshots.source, to: migration.from.snapshots.destination }),
-    importReadmeInGit({ from: migration.from.versions.source, to: migration.from.versions.destination }),
-    importReadmeInGit({ from: migration.to.snapshots.source, to: migration.to.snapshots.destination }),
-    importReadmeInGit({ from: migration.to.versions.source, to: migration.to.versions.destination }),
-  ]);
+  // return Promise.all([
+  //   Promise.resolve(),
+  //   // importReadmeInGit({ from: migration.from.snapshots.source, to: migration.from.snapshots.destination }),
+  //   // importReadmeInGit({ from: migration.from.versions.source, to: migration.from.versions.destination }),
+  //   // importReadmeInGit({ from: migration.to.snapshots.source, to: migration.to.snapshots.destination }),
+  //   // importReadmeInGit({ from: migration.to.versions.source, to: migration.to.versions.destination }),
+  // ]);
 }
 
 async function finalize(migration) {
