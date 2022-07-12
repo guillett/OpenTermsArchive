@@ -67,13 +67,9 @@ export default class MongoRepository extends RepositoryInterface {
   }
 
   async findAll(filter) {
-    console.log('');//eslint-disable-line
-    console.log('╔════START══filter══════════════════════════════════════════════════');//eslint-disable-line
-    console.log(filter);//eslint-disable-line
-    console.log(await this.collection.find(filter).explain());//eslint-disable-line
-    console.log('╚════END════filter══════════════════════════════════════════════════');//eslint-disable-line
-
-    return Promise.all((await this.collection.find(filter).project({ content: 0 }).sort({ fetchDate: 1 }).toArray())
+    return Promise.all((await this.collection.find(filter)
+      .project({ content: 0 }).sort({ fetchDate: 1 }).limit(1000)
+      .lean())
       .map(mongoDocument => this.#toDomain(mongoDocument, { deferContentLoading: true })));
   }
 

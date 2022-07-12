@@ -1,5 +1,6 @@
 import fsApi from 'fs';
 import path from 'path';
+import { exit } from 'process';
 import { fileURLToPath } from 'url';
 
 import config from 'config';
@@ -14,6 +15,22 @@ import { importReadmeInGit } from './utils/index.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_PATH = path.resolve(__dirname, '../../');
 const fs = fsApi.promises;
+
+//
+// mkdir -p data/migration
+// rm -Rf data/migration/*
+// cd data/migration
+//
+// # FROM
+// git clone git@github.com:OpenTermsArchive/contrib-versions.git
+// # git clone git@github.com:OpenTermsArchive/contrib-snapshots.git # No need cause mongodb
+// git clone git@github.com:OpenTermsArchive/pga-versions.git
+// git clone git@github.com:OpenTermsArchive/pga-snapshots.git
+//
+// # TO
+//
+//
+const MIGRATION_FOLDER = 'data/migration';
 
 const CONFIG = {
   servicesToMigrate: ['Instagram'],
@@ -50,14 +67,14 @@ const counters = {
         }),
         destination: new MongoRepository({
           connectionURI: 'mongodb://localhost:27877',
-          database: 'open-terms-archive-after-pga',
-          collection: 'snapshots',
+          database: 'open-terms-archive',
+          collection: 'snapshots-migrated',
         }),
         logger: winston.createLogger({ transports: [ new (winston.transports.File)({ filename: `${__dirname}/logs/${CONFIG.from.snapshots}.log` }), new winston.transports.Console() ], format }),
       },
       versions: {
         source: new GitRepository({
-          path: './data/contrib-versions',
+          path: `${MIGRATION_FOLDER}/contrib-versions`,
           prefixMessageToSnapshotId: 'This version was recorded after filtering snapshot with Mongo ID ',
           repository: 'git@github.com:OpenTermsArchive/contrib-versions.git',
           author: {
@@ -66,7 +83,7 @@ const counters = {
           },
         }),
         destination: new GitRepository({
-          path: './data/contrib-versions-after-pga',
+          path: `${MIGRATION_FOLDER}/contrib-versions-migrated`,
           prefixMessageToSnapshotId: 'This version was recorded after filtering snapshot with Mongo ID ',
           repository: 'git@github.com:OpenTermsArchive/contrib-versions.git',
           author: {
@@ -80,7 +97,7 @@ const counters = {
     to: {
       snapshots: {
         source: new GitRepository({
-          path: './data/pga-snapshots',
+          path: `${MIGRATION_FOLDER}/pga-snapshots`,
           repository: 'git@github.com:OpenTermsArchive/pga-snapshots.git',
           author: {
             name: 'Open Terms Archive Bot',
@@ -88,7 +105,7 @@ const counters = {
           },
         }),
         destination: new GitRepository({
-          path: './data/pga-snapshots-after-import',
+          path: `${MIGRATION_FOLDER}/pga-snapshots-migrated`,
           repository: 'git@github.com:OpenTermsArchive/pga-snapshots.git',
           author: {
             name: 'Open Terms Archive Bot',
@@ -99,7 +116,7 @@ const counters = {
       },
       versions: {
         source: new GitRepository({
-          path: './data/pga-versions',
+          path: `${MIGRATION_FOLDER}/pga-versions`,
           repository: 'git@github.com:OpenTermsArchive/pga-versions.git',
           author: {
             name: 'Open Terms Archive Bot',
@@ -107,7 +124,7 @@ const counters = {
           },
         }),
         destination: new GitRepository({
-          path: './data/pga-versions-after-import',
+          path: `${MIGRATION_FOLDER}/pga-versions-after-import`,
           repository: 'git@github.com:OpenTermsArchive/pga-versions.git',
           prefixMessageToSnapshotId: 'This version was recorded after filtering snapshot https://github.com/OpenTermsArchive/pga-snapshots/commit/',
           author: {
@@ -123,7 +140,13 @@ const counters = {
   await initialize(migration);
   console.log('Initialization Done');
   console.log('Migrating...', CONFIG.servicesToMigrate.join(', '));
-  const fromSnapshotsRecords = await migration.from.snapshots.source.findAll({ serviceId: { $in: CONFIG.servicesToMigrate } });
+  // const fromSnapshotsRecords = await migration.from.snapshots.source.findAll({ serviceId: { $in: CONFIG.servicesToMigrate } });
+  console.time('start');
+  const fromSnapshotsRecords = await migration.from.snapshots.source.findAll();
+
+  console.timeEnd('start');
+  process.exit();
+  console.log('Migrated...');
 
   console.log('fromSnapshotsRecords Done');
   const toSnapshotsRecords = await migration.to.snapshots.source.findAll();
@@ -224,11 +247,10 @@ async function initialize(migration) {
   ]);
 
   // return Promise.all([
-  //   Promise.resolve(),
   //   // importReadmeInGit({ from: migration.from.snapshots.source, to: migration.from.snapshots.destination }),
-  //   // importReadmeInGit({ from: migration.from.versions.source, to: migration.from.versions.destination }),
-  //   // importReadmeInGit({ from: migration.to.snapshots.source, to: migration.to.snapshots.destination }),
-  //   // importReadmeInGit({ from: migration.to.versions.source, to: migration.to.versions.destination }),
+  //   importReadmeInGit({ from: migration.from.versions.source, to: migration.from.versions.destination }),
+  //   importReadmeInGit({ from: migration.to.snapshots.source, to: migration.to.snapshots.destination }),
+  //   importReadmeInGit({ from: migration.to.versions.source, to: migration.to.versions.destination }),
   // ]);
 }
 

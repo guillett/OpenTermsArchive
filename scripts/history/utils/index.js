@@ -16,7 +16,7 @@ export async function importReadmeInGit({ from: sourceRepository, to: targetRepo
 
   await fs.copyFile(sourceRepositoryReadmePath, targetRepositoryReadmePath);
 
-  targetRepository.git.add(targetRepositoryReadmePath);
+  await targetRepository.git.add('./README.md');
 
   await targetRepository.git.commit({
     filePath: targetRepositoryReadmePath,
