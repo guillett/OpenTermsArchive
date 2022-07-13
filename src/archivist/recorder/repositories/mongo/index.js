@@ -69,7 +69,7 @@ export default class MongoRepository extends RepositoryInterface {
   async findAll(filter) {
     return Promise.all((await this.collection.find(filter)
       .project({ content: 0 }).sort({ fetchDate: 1 }).limit(1000)
-      .lean())
+      .toArray())
       .map(mongoDocument => this.#toDomain(mongoDocument, { deferContentLoading: true })));
   }
 
