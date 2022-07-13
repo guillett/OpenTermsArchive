@@ -6,7 +6,7 @@ import chai from 'chai';
 import jsdom from 'jsdom';
 
 import { InaccessibleContentError } from '../errors.js';
-import DocumentDeclaration from '../services/documentDeclaration.js';
+import PageDeclaration from '../services/pageDeclaration.js';
 
 import { convertRelativeURLsToAbsolute, filterHTML, filterPDF } from './index.js';
 
@@ -125,7 +125,7 @@ describe('Filter', () => {
       it('filters the given HTML content with common changing items', async () => {
         const result = await filterHTML({
           content: rawHTMLWithCommonChangingItems,
-          documentDeclaration: new DocumentDeclaration({
+          pageDeclaration: new PageDeclaration({
             location: virtualLocation,
             contentSelectors: 'body',
           }),
@@ -137,7 +137,7 @@ describe('Filter', () => {
       it('filters the given HTML content', async () => {
         const result = await filterHTML({
           content: rawHTML,
-          documentDeclaration: new DocumentDeclaration({
+          pageDeclaration: new PageDeclaration({
             location: virtualLocation,
             contentSelectors: 'body',
           }),
@@ -150,7 +150,7 @@ describe('Filter', () => {
         it('throws an InaccessibleContentError error', async () => {
           await expect(filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: '#thisAnchorDoesNotExist',
             }),
@@ -162,7 +162,7 @@ describe('Filter', () => {
         it('throws an InaccessibleContentError error', async () => {
           await expect(filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: '#empty',
             }),
@@ -174,7 +174,7 @@ describe('Filter', () => {
         it('throws an InaccessibleContentError error', async () => {
           await expect(filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: '#whitespaceOnly',
             }),
@@ -186,7 +186,7 @@ describe('Filter', () => {
         it('filters the given HTML content also with given additional filter', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: 'body',
               filters: [additionalFilter.removeLinks],
@@ -201,7 +201,7 @@ describe('Filter', () => {
         it('filters the given HTML content also with given additional filter', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: 'body',
               filters: [additionalFilter.removeLinksAsync],
@@ -216,7 +216,7 @@ describe('Filter', () => {
         it('filters the given HTML content', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: 'h1, #link2',
             }),
@@ -231,7 +231,7 @@ describe('Filter', () => {
       it('filters the given HTML content', async () => {
         const result = await filterHTML({
           content: rawHTML,
-          documentDeclaration: new DocumentDeclaration({
+          pageDeclaration: new PageDeclaration({
             location: virtualLocation,
             contentSelectors: [ 'h1', '#link2' ],
           }),
@@ -246,7 +246,7 @@ describe('Filter', () => {
         it('filters the given HTML content', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: {
                 startBefore: '#link1',
@@ -262,7 +262,7 @@ describe('Filter', () => {
         it('filters the given HTML content', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: {
                 startBefore: '#link2',
@@ -278,7 +278,7 @@ describe('Filter', () => {
         it('filters the given HTML content', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: {
                 startAfter: '#link1',
@@ -294,7 +294,7 @@ describe('Filter', () => {
         it('filters the given HTML content', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: {
                 startAfter: '#link2',
@@ -310,7 +310,7 @@ describe('Filter', () => {
         it('throws an InaccessibleContentError error', async () => {
           await expect(filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: {
                 startAfter: '#paragraph1',
@@ -324,7 +324,7 @@ describe('Filter', () => {
         it('throws an InaccessibleContentError error', async () => {
           await expect(filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: {
                 startAfter: '#link2',
@@ -340,7 +340,7 @@ describe('Filter', () => {
       it('filters the given HTML content', async () => {
         const result = await filterHTML({
           content: rawHTML,
-          documentDeclaration: new DocumentDeclaration({
+          pageDeclaration: new PageDeclaration({
             location: virtualLocation,
             contentSelectors: [
               {
@@ -363,7 +363,7 @@ describe('Filter', () => {
       it('filters the given HTML content', async () => {
         const result = await filterHTML({
           content: rawHTML,
-          documentDeclaration: new DocumentDeclaration({
+          pageDeclaration: new PageDeclaration({
             location: virtualLocation,
             contentSelectors: [
               'h1',
@@ -384,7 +384,7 @@ describe('Filter', () => {
         it('removes the specified elements', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: 'body',
               noiseSelectors: 'h1',
@@ -399,7 +399,7 @@ describe('Filter', () => {
         it('removes the specified elements', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: 'body',
               noiseSelectors: [ 'h1', '#link3' ],
@@ -414,7 +414,7 @@ describe('Filter', () => {
         it('removes the specified elements', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: 'body',
               noiseSelectors: {
@@ -430,7 +430,7 @@ describe('Filter', () => {
           it('throws an InaccessibleContentError error', async () => {
             await expect(filterHTML({
               content: rawHTML,
-              documentDeclaration: new DocumentDeclaration({
+              pageDeclaration: new PageDeclaration({
                 location: virtualLocation,
                 contentSelectors: 'body',
                 noiseSelectors: {
@@ -445,7 +445,7 @@ describe('Filter', () => {
           it('throws an InaccessibleContentError error', async () => {
             await expect(filterHTML({
               content: rawHTML,
-              documentDeclaration: new DocumentDeclaration({
+              pageDeclaration: new PageDeclaration({
                 location: virtualLocation,
                 contentSelectors: 'body',
                 noiseSelectors: {
@@ -461,7 +461,7 @@ describe('Filter', () => {
         it('removes all the selections', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: 'body',
               noiseSelectors: [
@@ -485,7 +485,7 @@ describe('Filter', () => {
         it('removes all the selections', async () => {
           const result = await filterHTML({
             content: rawHTML,
-            documentDeclaration: new DocumentDeclaration({
+            pageDeclaration: new PageDeclaration({
               location: virtualLocation,
               contentSelectors: 'body',
               noiseSelectors: [
