@@ -39,3 +39,8 @@ all:
             vps-463f0baf.vps.ovh.net:
               ansible_user: ota
               config_file_name: p2b-compliance
+        experimentation:
+          hosts:
+            54.37.5.206:
+              ota_branch: experiment-multipages
+              config_file_name: experimentation

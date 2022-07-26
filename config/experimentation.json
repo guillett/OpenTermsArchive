@@ -1,0 +1,35 @@
+{
+  "services": {
+    "repository": "https://github.com/OpenTermsArchive/france-elections-declarations.git"
+  },
+  "recorder": {
+    "versions": {
+      "storage": {
+        "git": {
+          "prefixMessageToSnapshotId": "This version was recorded after filtering snapshot https://github.com/OpenTermsArchive/sandbox-snapshots/commit/",
+          "repository": "git@github.com:OpenTermsArchive/sandbox-versions.git"
+        }
+      }
+    },
+    "snapshots": {
+      "storage": {
+        "git": {
+          "repository": "git@github.com:OpenTermsArchive/sandbox-snapshots.git"
+        }
+      }
+    }
+  },
+  "fetcher": {
+    "language": "fr"
+  },
+  "notifier": false,
+  "tracker": {
+    "githubIssues": {
+      "repository": "OpenTermsArchive/sandbox-declarations"
+    }
+  },
+  "dataset": {
+    "title": "france-elections",
+    "versionsRepositoryURL": "https://github.com/OpenTermsArchive/sandbox-versions"
+  }
+}
