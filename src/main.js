@@ -3,7 +3,7 @@ import cron from 'croner';
 
 import Archivist from './archivist/index.js';
 import logger from './logger/index.js';
-import Notifier from './notifier/index.js';
+// import Notifier from './notifier/index.js';
 import Tracker from './tracker/index.js';
 
 const args = process.argv.slice(2);
@@ -40,9 +40,9 @@ const extraArgs = args.filter(arg => !arg.startsWith('--'));
     return;
   }
 
-  if (process.env.NODE_ENV === 'production') {
-    archivist.attach(new Notifier(archivist.serviceDeclarations));
-  }
+  // if (process.env.NODE_ENV === 'production') {
+  //   archivist.attach(new Notifier(archivist.serviceDeclarations));
+  // }
 
   if (process.env.GITHUB_TOKEN) {
     const tracker = new Tracker();
