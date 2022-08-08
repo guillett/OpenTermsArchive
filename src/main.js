@@ -44,12 +44,12 @@ const extraArgs = args.filter(arg => !arg.startsWith('--'));
   //   archivist.attach(new Notifier(archivist.serviceDeclarations));
   // }
 
-  if (process.env.GITHUB_TOKEN) {
-    const tracker = new Tracker();
+  // if (process.env.GITHUB_TOKEN) {
+  //   const tracker = new Tracker();
 
-    await tracker.initialize();
-    archivist.attach(tracker);
-  }
+  //   await tracker.initialize();
+  //   archivist.attach(tracker);
+  // }
 
   await archivist.trackChanges(serviceIds);
 
